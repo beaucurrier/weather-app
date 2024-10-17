@@ -20,7 +20,7 @@ export default function Home() {
       } else {
         throw new Error("City not found");
       }
-    } catch (err) {
+    } catch (error) {
       throw new Error("Failed to fetch coordinates");
     }
   };

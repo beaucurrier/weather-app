@@ -21,7 +21,7 @@ export default function Home() {
         throw new Error("City not found");
       }
     } catch (error) {
-      throw new Error("Failed to fetch coordinates");
+      throw setError("Failed to fetch coordinates");
     }
   };
 

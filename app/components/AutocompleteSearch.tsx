@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import cityList from '../../public/city.list.json'; // Import the city list
 
 // Define the City interface to type the data
@@ -82,7 +82,7 @@ export default function AutocompleteSearch() {
               className='p-2 hover:bg-gray-200 cursor-pointer'
               onClick={() => handleCitySelect(suggestion)} // Automatically navigate on city selection
             >
-              {suggestion.name}{suggestion.state ? `, ${suggestion.state}` : ''}, {suggestion.country} {/* Display city, state (if available), and country */}
+              {`${suggestion.name}, ${suggestion.state} === "" ? "" : ${suggestion.state + ","} ${suggestion.country}`} {/* Display city, state (if available), and country */}
             </li>
           ))}
         </ul>

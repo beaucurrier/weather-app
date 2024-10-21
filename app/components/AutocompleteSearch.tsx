@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import cityList from '../../public/city.list.json'; // Import the city list
 
 // Define the City interface to type the data

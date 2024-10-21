@@ -18,10 +18,17 @@ interface City {
 // Cast the cityList as an array of City objects
 const cities: City[] = cityList as City[];
 
-export default function AutocompleteSearch() {
+interface AutocompleteSearchProps {
+  onSelectCity?: (city: City) => void; // Pass selected city to the parent (Dashboard)
+  mode: 'home' | 'dashboard'; // Mode to determine behavior (home or dashboard)
+}
+
+export default function AutocompleteSearch({
+  onSelectCity,
+  mode,
+}: AutocompleteSearchProps) {
   const [city, setCity] = useState<string>(''); // State to store the user input
   const [suggestions, setSuggestions] = useState<City[]>([]); // State to store the city suggestions
-  const [selectedCity, setSelectedCity] = useState<City | null>(null); // State to track the selected city
   const router = useRouter(); // Initialize the router for navigation
 
   // Function to fetch city suggestions based on user input
@@ -38,17 +45,16 @@ export default function AutocompleteSearch() {
 
   // Function to handle selecting a city from the suggestions
   const handleCitySelect = (city: City) => {
-    setSelectedCity(city); // Save the selected city to state
+    setCity(''); // Clear the search input
     setSuggestions([]); // Hide the suggestions after selection
-    router.push(`/location/${city.id}`); // Automatically navigate to /location/:cityId
-  };
 
-  // Function to navigate to the city's weather page using its city ID
-  const goToCityWeather = () => {
-    if (selectedCity) {
-      router.push(`/location/${selectedCity.id}`); // Navigate to /location/:cityId
-    } else {
-      alert('Please select a city before viewing the weather'); // Alert if no city is selected
+    // Behavior based on the `mode` prop
+    if (mode === 'home') {
+      // Navigate to the city's weather page on the home page
+      router.push(`/location/${city.id}`);
+    } else if (mode === 'dashboard' && onSelectCity) {
+      // Add city to the favorites list on the dashboard
+      onSelectCity(city);
     }
   };
 
@@ -65,12 +71,6 @@ export default function AutocompleteSearch() {
           placeholder='Enter a city...'
           className='p-2 border rounded-md text-gray-900'
         />
-        <button
-          className='p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition'
-          onClick={goToCityWeather} // Navigate to the weather page for the selected city
-        >
-          View Weather
-        </button>
       </div>
 
       {/* Display suggestions if available */}
@@ -80,9 +80,10 @@ export default function AutocompleteSearch() {
             <li
               key={suggestion.id}
               className='p-2 hover:bg-gray-200 cursor-pointer'
-              onClick={() => handleCitySelect(suggestion)} // Automatically navigate on city selection
+              onClick={() => handleCitySelect(suggestion)} // Add to favorite when city is selected
             >
-              {`${suggestion.name}, ${suggestion.state} === "" ? "" : ${suggestion.state + ","} ${suggestion.country}`} {/* Display city, state (if available), and country */}
+              {suggestion.name}
+              {suggestion.state ? `, ${suggestion.state}` : ''}, {suggestion.country} {/* Display city, state (if available), and country */}
             </li>
           ))}
         </ul>

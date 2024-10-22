@@ -22,7 +22,7 @@ export default function SignIn() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
       {Object.values(providers).map((provider) => (
-        <button key={provider.name} onClick={() => signIn(provider.id)} className='p-4 bg-blue-600 text-white rounded-md'>
+        <button key={provider.name} onClick={(e) => {e.preventDefault(); signIn(provider.id)}} className='p-4 bg-blue-600 text-white rounded-md'>
           Sign in with {provider.name}
         </button>
       ))}

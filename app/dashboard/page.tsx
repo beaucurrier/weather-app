@@ -5,7 +5,7 @@ import AutocompleteSearch, { City } from '../components/AutocompleteSearch'; // 
 import Link from 'next/link';
 
 export default function Dashboard() {
-  const { data: session } = useSession(); // Use NextAuth's useSession hook to check if the user is logged in
+  const { data: session, status } = useSession(); // Use NextAuth's useSession hook to check if the user is logged in
 
   // Redirect to sign-in page if no session is found
   if (!session) {
@@ -13,15 +13,20 @@ export default function Dashboard() {
     return <p>Redirecting...</p>; // Display a message while redirecting
   }
 
+  useEffect(() => {
+    if (status !== "authenticated"){signIn()}
+  },[status])
+
   const [favorites, setFavorites] = useState<City[]>([]); // State to store favorite cities
 
   // Load favorites from localStorage when the component mounts
   useEffect(() => {
+    if(session){
     const savedFavorites = localStorage.getItem('favorites');
     if (savedFavorites) {
       setFavorites(JSON.parse(savedFavorites));
-    }
-  }, []);
+    }}
+  }, [session]);
 
   // Save favorites to localStorage whenever they change
   useEffect(() => {

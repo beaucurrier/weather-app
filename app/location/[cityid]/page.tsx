@@ -20,7 +20,8 @@ export default function CityWeatherPage() {
         if (!response.ok) throw new Error('Failed to fetch weather data'); // Handle errors
         const data: WeatherProps = await response.json();
         setWeather(data);
-      } catch (err: any) {
+      } catch (error) {
+        const err = error as Error;
         setError(err.message); // Set the error message in case of failure
       }
     };
@@ -37,7 +38,8 @@ export default function CityWeatherPage() {
         if (!response.ok) throw new Error('Failed to fetch forecast data');
         const data = await response.json();
         setForecast(data); // Set forecast data to state
-      } catch (err: any) {
+      } catch (error) {
+        const err = error as Error;
         setError(err.message); // Set the error message in case of failure
       }
     };

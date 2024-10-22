@@ -10,7 +10,7 @@ export default function Dashboard() {
   // Redirect to sign-in page if no session is found
 
   useEffect(() => {
-    if (status !== "authenticated"){signIn()}
+    if (status === "unauthenticated"){signIn()}
   },[status])
 
   const [favorites, setFavorites] = useState<City[]>([]); // State to store favorite cities
@@ -46,9 +46,9 @@ export default function Dashboard() {
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Update localStorage after removal
   };
 
-//   if (status === "loading"){return <p>Loading...</p>}
+  if (status === "loading"){return <p>Loading...</p>}
   
-  return (
+  return session ? (
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>
       <h1 className='text-4xl font-bold mb-8'>Welcome, {session && session.user?.name}! Here are your Favorite Locations</h1>
 
@@ -77,5 +77,5 @@ export default function Dashboard() {
         )}
       </div>
     </div>
-  );
+  ):(<p>redirecting...</p>)
 }

@@ -25,11 +25,11 @@ export default function Dashboard() {
   }, [session]);
 
   // Save favorites to localStorage whenever they change
-  useEffect(() => {
-    if (favorites.length > 0) {
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-    }
-  }, [favorites]);
+//   useEffect(() => {
+//     if (favorites.length > 0) {
+//       localStorage.setItem('favorites', JSON.stringify(favorites));
+//     }
+//   }, [favorites]);
 
   // Function to add a city to the favorites list
   const addCityToFavorites = (city: City) => {
@@ -46,7 +46,7 @@ export default function Dashboard() {
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Update localStorage after removal
   };
 
-  if (status === "loading"){return <p>Loading...</p>}
+//   if (status === "loading"){return <p>Loading...</p>}
   
   return (
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>

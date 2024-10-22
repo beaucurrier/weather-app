@@ -8,10 +8,6 @@ export default function Dashboard() {
   const { data: session, status } = useSession(); // Use NextAuth's useSession hook to check if the user is logged in
 
   // Redirect to sign-in page if no session is found
-  if (!session) {
-    signIn();
-    return <p>Redirecting...</p>; // Display a message while redirecting
-  }
 
   useEffect(() => {
     if (status !== "authenticated"){signIn()}
@@ -50,9 +46,11 @@ export default function Dashboard() {
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Update localStorage after removal
   };
 
+  if (status === "loading"){return <p>Loading...</p>}
+  
   return (
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>
-      <h1 className='text-4xl font-bold mb-8'>Welcome, {session.user?.name}! Here are your Favorite Locations</h1>
+      <h1 className='text-4xl font-bold mb-8'>Welcome, {session && session.user?.name}! Here are your Favorite Locations</h1>
 
       {/* Autocomplete search component to add cities */}
       <AutocompleteSearch mode='dashboard' onSelectCity={addCityToFavorites} />

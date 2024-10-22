@@ -13,6 +13,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/auth/signin', // Customize your sign-in page route
   },
+  secret:process.env.NEXTAUTH_URL
 };
 
 // Create the NextAuth handler

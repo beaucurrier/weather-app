@@ -3,18 +3,16 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import cityList from '../../public/city.list.json'; // Import the city list
 
-// Define the City interface to type the data
-interface City {
+export interface City {
   id: number;
   name: string;
-  state?: string; // Optional state property
+  state?: string;
   country: string;
   coord: {
     lon: number;
     lat: number;
   };
 }
-
 // Cast the cityList as an array of City objects
 const cities: City[] = cityList as City[];
 
@@ -23,10 +21,7 @@ interface AutocompleteSearchProps {
   mode: 'home' | 'dashboard'; // Mode to determine behavior (home or dashboard)
 }
 
-export default function AutocompleteSearch({
-  onSelectCity,
-  mode,
-}: AutocompleteSearchProps) {
+export default function AutocompleteSearch({ onSelectCity, mode }: AutocompleteSearchProps) {
   const [city, setCity] = useState<string>(''); // State to store the user input
   const [suggestions, setSuggestions] = useState<City[]>([]); // State to store the city suggestions
   const router = useRouter(); // Initialize the router for navigation
@@ -58,6 +53,13 @@ export default function AutocompleteSearch({
     }
   };
 
+  // Handle key press events
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && suggestions.length > 0) {
+      handleCitySelect(suggestions[0]); // Select the first suggestion on Enter key press
+    }
+  };
+
   return (
     <div>
       <div className='flex items-center space-x-4'>
@@ -69,6 +71,7 @@ export default function AutocompleteSearch({
             fetchCitySuggestions(e.target.value); // Fetch suggestions based on input
           }}
           placeholder='Enter a city...'
+          onKeyDown={handleKeyDown} // Add key down event listener
           className='p-2 border rounded-md text-gray-900'
         />
       </div>
@@ -83,7 +86,9 @@ export default function AutocompleteSearch({
               onClick={() => handleCitySelect(suggestion)} // Add to favorite when city is selected
             >
               {suggestion.name}
-              {suggestion.state ? `, ${suggestion.state}` : ''}, {suggestion.country} {/* Display city, state (if available), and country */}
+              {suggestion.state ? `, ${suggestion.state}` : ''},
+              {suggestion.country}
+              {/* Display city, state (if available), and country */}
             </li>
           ))}
         </ul>

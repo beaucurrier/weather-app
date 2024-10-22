@@ -1,21 +1,18 @@
 'use client';
 import { useEffect, useState } from 'react';
-import AutocompleteSearch from '../components/AutocompleteSearch';
+import { useSession, signIn } from 'next-auth/react';
+import AutocompleteSearch, { City } from '../components/AutocompleteSearch'; // Import City interface from AutocompleteSearch
 import Link from 'next/link';
 
-// Define the City interface
-interface City {
-  id: number;
-  name: string;
-  state?: string;
-  country: string;
-  coord: {
-    lon: number;
-    lat: number;
-  };
-}
-
 export default function Dashboard() {
+  const { data: session } = useSession(); // Use NextAuth's useSession hook to check if the user is logged in
+
+  // Redirect to sign-in page if no session is found
+  if (!session) {
+    signIn();
+    return <p>Redirecting...</p>; // Display a message while redirecting
+  }
+
   const [favorites, setFavorites] = useState<City[]>([]); // State to store favorite cities
 
   // Load favorites from localStorage when the component mounts
@@ -50,7 +47,7 @@ export default function Dashboard() {
 
   return (
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>
-      <h1 className='text-4xl font-bold mb-8'>Favorite Locations</h1>
+      <h1 className='text-4xl font-bold mb-8'>Welcome, {session.user?.name}! Here are your Favorite Locations</h1>
 
       {/* Autocomplete search component to add cities */}
       <AutocompleteSearch mode='dashboard' onSelectCity={addCityToFavorites} />
@@ -68,10 +65,7 @@ export default function Dashboard() {
                   {city.name}
                   {city.state ? `, ${city.state}` : ''}, {city.country}
                 </Link>
-                <button
-                  onClick={() => removeCityFromFavorites(city.id)}
-                  className='text-red-500 hover:underline ml-4'
-                >
+                <button onClick={() => removeCityFromFavorites(city.id)} className='text-red-500 hover:underline ml-4'>
                   Delete
                 </button>
               </li>

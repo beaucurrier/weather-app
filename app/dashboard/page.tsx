@@ -1,24 +1,23 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession, signIn, getSession} from 'next-auth/react';
+import {Session} from 'next-auth';
 import AutocompleteSearch, { City } from '../components/AutocompleteSearch'; // Import City interface from AutocompleteSearch
 import Link from 'next/link';
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState<City[]>([]);
 
   // Redirect to sign-in page if no session is found
   if (!session) {
     signIn();
     return <p>Redirecting...</p>; // Display a message while redirecting
   }
-
-  const [favorites, setFavorites] = useState<City[]>([]);
-
   
   // Load favorite cities from MongoDB when the component mounts
-  useEffect(() => {
-    
+  useEffect(() => { 
     async function fetchFavorites() {
       try {
         const response = await fetch('/api/user/favorites'); // Fetch user's favorites from MongoDB
@@ -29,15 +28,24 @@ export default function Dashboard() {
         console.error('Error fetching favorite cities:', error);
       }
     }
-    if (status === 'authenticated'){
+    if (session){
     fetchFavorites();
   }
-  }, [status]);
+  }, [session]);
 
   useEffect(() => {
-    //@ts-ignore
-    if (status === "unauthenticated"){signIn()}
-  },[status])
+    const checkSession = async () => {
+      const session = await getSession();
+      setSession(session);
+      if (!session) {
+        signIn();
+      } else {
+        setLoading(false); 
+      }
+    };
+
+    checkSession(); 
+  }, []);
 
   // Function to add a city to the favorites list
   const addCityToFavorites = async (city: City) => {
@@ -75,9 +83,10 @@ export default function Dashboard() {
     }
   };
 
-  // if (status === "loading"){return <p>Loading...</p>}
+  if (loading){return <p>Loading...</p>}
+  if (!session ){return <p>Redirection...</p>}
 
-  return session ?(
+  return (
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>
       <h1 className='text-4xl font-bold mb-8'>Welcome, {session.user?.name}! Here are your Favorite Locations</h1>
 
@@ -103,5 +112,5 @@ export default function Dashboard() {
         )}
       </div>
     </div>
-  ): (<p>Redirecting...</p>);
+  );
 }

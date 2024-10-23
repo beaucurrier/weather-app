@@ -66,7 +66,7 @@ export default function Dashboard() {
     }
   };
 
-  return (
+  return session ?(
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>
       <h1 className='text-4xl font-bold mb-8'>Welcome, {session.user?.name}! Here are your Favorite Locations</h1>
 
@@ -92,5 +92,5 @@ export default function Dashboard() {
         )}
       </div>
     </div>
-  );
+  ): (<p>Redirecting...</p>);
 }

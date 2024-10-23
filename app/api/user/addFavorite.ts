@@ -9,6 +9,7 @@ import { City as CityType } from '../../components/AutocompleteSearch'; // Impor
 export default async function addFavorite(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
   const { city }: { city: CityType } = req.body;
+  console.log(city);
   const session = await getSession({ req });
   if (!session) return res.status(401).send('Unauthorized');
 

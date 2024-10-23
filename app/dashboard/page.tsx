@@ -13,6 +13,7 @@ export default function Dashboard() {
   useEffect(() => {
     const checkSession = async () => {
       const sessionData = await getSession();
+      console.log(sessionData)
       if (!sessionData) {
         signIn();
       } else {
@@ -20,25 +21,24 @@ export default function Dashboard() {
         setLoading(false); 
       }
     };
-    checkSession(); 
-  
+    checkSession();  
 }, []);
 
 // Load favorite cities from MongoDB when the component mounts
   useEffect(() => { 
+    if (!session)return;
     async function fetchFavorites() {
       try {
         const response = await fetch('/api/user/favorites'); // Fetch user's favorites from MongoDB
         if (!response.ok) throw new Error('Failed to fetch favorites');
         const data = await response.json();
+        console.log(data);
         setFavorites(data);
       } catch (error) {
         console.error('Error fetching favorite cities:', error);
       }
     }
-    if (session){
     fetchFavorites();
-  }
   }, [session]);
 
  

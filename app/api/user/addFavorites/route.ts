@@ -1,10 +1,10 @@
 'use server';
 import { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../lib/mongoose';
-import User from '../../../models/User';
-import City from '../../../models/City';
+import dbConnect from '../../../../lib/mongoose';
+import User from '../../../../models/User';
+import City from '../../../../models/City';
 import { getSession } from 'next-auth/react';
-import { City as CityType } from '../../components/AutocompleteSearch'; // Import City from AutocompleteSearch
+import { City as CityType } from '../../../components/AutocompleteSearch'; // Import City from AutocompleteSearch
 
 export default async function addFavorite(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();

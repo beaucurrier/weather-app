@@ -1,7 +1,7 @@
 'use server';
 import { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../lib/mongoose';
-import User from '../../../models/User';
+import dbConnect from '../../../../lib/mongoose';
+import User from '../../../../models/User';
 import { getSession } from 'next-auth/react';
 
 export default async function removeFavorite(req: NextApiRequest, res: NextApiResponse) {

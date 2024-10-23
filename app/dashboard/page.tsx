@@ -5,7 +5,7 @@ import AutocompleteSearch, { City } from '../components/AutocompleteSearch'; // 
 import Link from 'next/link';
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   // Redirect to sign-in page if no session is found
   if (!session) {
@@ -29,6 +29,10 @@ export default function Dashboard() {
     }
     fetchFavorites();
   }, []);
+
+  useEffect(() => {
+    if (status !== "authenticated"){signIn()}
+  },[status])
 
   // Function to add a city to the favorites list
   const addCityToFavorites = async (city: City) => {
@@ -65,6 +69,8 @@ export default function Dashboard() {
       console.error('Error removing city from favorites:', error);
     }
   };
+
+  // if (status === "loading"){return <p>Loading...</p>}
 
   return session ?(
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>

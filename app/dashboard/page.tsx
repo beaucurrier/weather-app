@@ -9,8 +9,22 @@ export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<City[]>([]);
+   
+  useEffect(() => {
+    const checkSession = async () => {
+      const sessionData = await getSession();
+      if (!sessionData) {
+        signIn();
+      } else {
+        setSession(sessionData);
+        setLoading(false); 
+      }
+    };
+    checkSession(); 
   
-  // Load favorite cities from MongoDB when the component mounts
+}, []);
+
+// Load favorite cities from MongoDB when the component mounts
   useEffect(() => { 
     async function fetchFavorites() {
       try {
@@ -27,18 +41,7 @@ export default function Dashboard() {
   }
   }, [session]);
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const sessionData = await getSession();
-      if (!sessionData) {
-        signIn();
-      } else {
-        setSession(sessionData);
-        setLoading(false); 
-      }
-    };
-    checkSession(); 
-  }, []);
+ 
 
   // Function to add a city to the favorites list
   const addCityToFavorites = async (city: City) => {

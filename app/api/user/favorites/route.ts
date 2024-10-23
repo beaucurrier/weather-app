@@ -1,17 +1,18 @@
 'use server';
-import { NextApiRequest, NextApiResponse } from 'next';
+import {NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/mongoose';
 import User from '../../../../models/User';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
+import authOptions from '../../../../lib/auth';
 
-export default async function getFavorites(req: NextApiRequest, res: NextApiResponse) {
+export default async function GET(req: NextRequest) {
   await dbConnect();
-  const session = await getSession({ req });
+  const session = await getServerSession(authOptions);
   console.log(session);
-  if (!session) return res.status(401).send('Unauthorized');
+  if (!session) return NextResponse.json({message: 'unauthorized'}, {status: 401});
 
   const user = await User.findOne({ email: session.user?.email }).populate('favoriteCities');
-  if(!user || !user.favoriteCities) {return res.status(200).json([])}
+  if(!user || !user.favoriteCities) {return NextResponse.json([],{status: 200})}
   
-  res.status(200).json(user.favoriteCities);
+  return NextResponse.json(user.favoriteCities,{status: 200});
 }

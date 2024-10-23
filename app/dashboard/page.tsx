@@ -15,8 +15,10 @@ export default function Dashboard() {
 
   const [favorites, setFavorites] = useState<City[]>([]);
 
+  
   // Load favorite cities from MongoDB when the component mounts
   useEffect(() => {
+    
     async function fetchFavorites() {
       try {
         const response = await fetch('/api/user/favorites'); // Fetch user's favorites from MongoDB
@@ -27,11 +29,14 @@ export default function Dashboard() {
         console.error('Error fetching favorite cities:', error);
       }
     }
+    if (status === 'authenticated'){
     fetchFavorites();
-  }, []);
+  }
+  }, [status]);
 
   useEffect(() => {
-    if (status !== "authenticated"){signIn()}
+    //@ts-ignore
+    if (status === "unauthenticated"){signIn()}
   },[status])
 
   // Function to add a city to the favorites list

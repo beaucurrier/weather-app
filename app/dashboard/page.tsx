@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useSession, signIn, getSession} from 'next-auth/react';
+import { signIn, getSession} from 'next-auth/react';
 import {Session} from 'next-auth';
 import AutocompleteSearch, { City } from '../components/AutocompleteSearch'; // Import City interface from AutocompleteSearch
 import Link from 'next/link';
@@ -9,12 +9,6 @@ export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<City[]>([]);
-
-  // Redirect to sign-in page if no session is found
-  if (!session) {
-    signIn();
-    return <p>Redirecting...</p>; // Display a message while redirecting
-  }
   
   // Load favorite cities from MongoDB when the component mounts
   useEffect(() => { 
@@ -35,15 +29,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const session = await getSession();
-      setSession(session);
-      if (!session) {
+      const sessionData = await getSession();
+      if (!sessionData) {
         signIn();
       } else {
+        setSession(sessionData);
         setLoading(false); 
       }
     };
-
     checkSession(); 
   }, []);
 

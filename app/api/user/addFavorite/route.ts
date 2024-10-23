@@ -1,20 +1,22 @@
 'use server';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/mongoose';
 import User from '../../../../models/User';
 import City from '../../../../models/City';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 import { City as CityType } from '../../../components/AutocompleteSearch'; // Import City from AutocompleteSearch
+import authOptions from '../../../../lib/auth';
 
-export default async function addFavorite(req: NextApiRequest, res: NextApiResponse) {
+export default async function POST(req: NextRequest, res: NextResponse) {
   await dbConnect();
-  const { city }: { city: CityType } = req.body;
+  const body = await req.json()
+  const { city }: { city: CityType } = body;
   console.log(city);
-  const session = await getSession({ req });
-  if (!session) return res.status(401).send('Unauthorized');
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({message: 'unauthorized'}, {status: 401});
 
   const user = await User.findOne({ email: session.user?.email });
-  if (!user) return res.status(404).send('User not found');
+  if (!user) return NextResponse.json({message: 'User Not Found'},{status: 404})
 
   // Add city to favorites
   let cityRecord = await City.findOne({ id: city.id });
@@ -23,5 +25,5 @@ export default async function addFavorite(req: NextApiRequest, res: NextApiRespo
   }
   user.favoriteCities.push(cityRecord._id);
   await user.save();
-  res.status(200).json(user.favoriteCities);
+  return NextResponse.json(user.favoriteCities, {status: 200});
 }

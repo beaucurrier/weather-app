@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { ICity } from "./City";
 
 export interface IUser extends Document {
   name: string;
   email: string;
   image: string;
-  favoriteCities: Array<mongoose.Schema.Types.ObjectId>; // Reference to City model
+  favoriteCities: ICity[]; // Reference to City model
 }
 
 const UserSchema: Schema = new Schema({

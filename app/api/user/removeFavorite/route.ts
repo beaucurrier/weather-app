@@ -1,22 +1,29 @@
-'use server';
-import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '../../../../lib/mongoose';
-import User from '../../../../models/User';
-import { getServerSession } from 'next-auth';
-import authOptions from '../../../../lib/auth';
+"use server";
+import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "../../../../lib/mongoose";
+import User, { IUser } from "../../../../models/User";
+import { getServerSession } from "next-auth";
+import authOptions from "../../../../lib/auth";
+import { ICity } from "../../../../models/City";
 
-export default async function DELETE(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<NextResponse> {
   await dbConnect();
-  const body = await req.json()
+  const body = await req.json();
   const { cityId }: { cityId: number } = body;
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({message: 'unauthorized'}, {status: 401});
+  if (!session)
+    return NextResponse.json({ message: "unauthorized" }, { status: 401 });
 
-  const user = await User.findOne({ email: session.user?.email });
-  if (!user) return NextResponse.json({message: 'User Not Found'},{status: 404})
+  const user: IUser | null = await User.findOne({
+    email: session.user?.email,
+  }).populate<{ favoriteCities: ICity[] }>("favoriteCities");
+  if (!user)
+    return NextResponse.json({ message: "User Not Found" }, { status: 404 });
 
   // Remove city from favorites
-  user.favoriteCities = user.favoriteCities.filter((fav: number) => fav.toString() !== cityId.toString());
+  user.favoriteCities = user.favoriteCities.filter(
+    (fav: ICity) => fav.id.toString() !== cityId.toString()
+  );
   await user.save();
-  return NextResponse.json(user.favoriteCities, {status: 200});
+  return NextResponse.json(user.favoriteCities, { status: 200 });
 }

@@ -5,7 +5,7 @@ import User from '../../../../models/User';
 import City from '../../../../models/City';
 import { getServerSession } from 'next-auth';
 import { City as CityType } from '../../../components/AutocompleteSearch'; // Import City from AutocompleteSearch
-import authOptions from '../../../../lib/auth';
+import authOptions from '../../../../lib/auth'; 
 
 export default async function POST(req: NextRequest, res: NextResponse) {
   await dbConnect();

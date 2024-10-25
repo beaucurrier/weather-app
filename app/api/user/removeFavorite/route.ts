@@ -5,7 +5,7 @@ import User from '../../../../models/User';
 import { getServerSession } from 'next-auth';
 import authOptions from '../../../../lib/auth';
 
-export default async function POST(req: NextRequest): Promise<NextResponse> {
+export default async function DELETE(req: NextRequest): Promise<NextResponse> {
   await dbConnect();
   const body = await req.json()
   const { cityId }: { cityId: number } = body;

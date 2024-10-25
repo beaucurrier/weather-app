@@ -1,4 +1,4 @@
-'use client';
+
 import mongoose from 'mongoose';
 
 const MONGODB_URI: string = process.env.MONGO_DB_URI || '';

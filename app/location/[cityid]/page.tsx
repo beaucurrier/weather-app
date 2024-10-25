@@ -9,6 +9,7 @@ export default function CityWeatherPage() {
   const [forecast, setForecast] = useState<ForecastProps['forecast'] | null>(null); // State to store the forecast data
   const [error, setError] = useState<string | null>(null); // State to store error messages
   const { cityId } = useParams(); // Get cityId from the URL
+  console.log(cityId);
 
   // Fetch weather data for the city
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function CityWeatherPage() {
         );
         if (!response.ok) throw new Error('Failed to fetch weather data'); // Handle errors
         const data: WeatherProps = await response.json();
+        console.log(data);
         setWeather(data);
       } catch (error) {
         const err = error as Error;
@@ -37,6 +39,7 @@ export default function CityWeatherPage() {
         );
         if (!response.ok) throw new Error('Failed to fetch forecast data');
         const data = await response.json();
+        console.log(data);
         setForecast(data); // Set forecast data to state
       } catch (error) {
         const err = error as Error;

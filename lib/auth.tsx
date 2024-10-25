@@ -9,7 +9,7 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/signin",
+    signIn: "/auth/signin",
   },
   secret: process.env.SECRET
 };

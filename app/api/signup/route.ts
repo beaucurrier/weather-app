@@ -47,7 +47,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.log('Password hashed successfully');
     const magicToken = uuidv4();
     const expiry = new Date();
-    expiry.setHours(expiry.getHours() + 1);
+    expiry.setHours(expiry.getHours() + 10);
 
     // Step 5: Create a new user
     const newUser: IUser = await User.create({

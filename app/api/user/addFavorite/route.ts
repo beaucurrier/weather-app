@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     user = new User({
       email: session.user?.email,
       name: session.user?.name,
-      image: session.user?.image,
+      image: session.user?.image ?? '',
       favoriteCities: [],
     });
     await user?.save();
@@ -39,14 +39,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     cityRecord = await City.create(city);
   }
   if (
-    user.favoriteCities.some(
+    user.favoriteCities?.some(
       (fcity) => fcity.id.toString() === cityRecord?.id.toString()
     )
   ) {
     return NextResponse.json({ message: "City already added" });
   }
   if (cityRecord) {
-    user.favoriteCities.push(cityRecord);
+    user.favoriteCities?.push(cityRecord);
   }
   await user.save();
   await user.populate<{ favoriteCities: ICity[] }>("favoriteCities");

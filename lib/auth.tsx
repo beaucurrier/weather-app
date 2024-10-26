@@ -35,12 +35,14 @@ const authOptions: NextAuthOptions = {
         return {
           id: user._id.toString(),
           email: user.email,
-          name: user.name
+          name: user.name ?? '',
+          image: user.image ?? ''
         };
       }
     })
   ],
   // Custom authentication pages
+  
   pages: {
     signIn: "/auth/signin"  // Custom sign-in page route
   },

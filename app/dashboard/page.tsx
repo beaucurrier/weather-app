@@ -10,6 +10,7 @@ declare module 'next-auth' {
       name?: string;
       email?: string;
       emailVerified?: boolean; // Add custom field here
+      image?: string;
     };
   }
 }

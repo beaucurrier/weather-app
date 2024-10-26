@@ -20,7 +20,7 @@ const UserSchema: Schema<IUser> = new Schema({
   email: { type: String, required: true, unique: true }, // Email is required and must be unique
   name: { type: String, required: true }, // Name is required
   password: { type: String }, // Password is required
-  image: { type: String }, // Optional image field for the user's profile picture
+  image: { type: String, default: '' }, // Optional image field for the user's profile picture
   favoriteCities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'City', default: [] }], // Optional array of ObjectIds referencing the City model, defaults to an empty array
   emailVerified: {type: Boolean, default: false},
   token: {type: String, default: null},

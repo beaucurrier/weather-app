@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../lib/mongoose';
-import User from '../../../models/User';
+import User, { IUser } from '../../../models/User';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
@@ -19,9 +19,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     await dbConnect();
 
     // Find the user with the provided email and magic token
-    const user = await User.findOne({ email, magicToken: token });
+    const user: IUser | null = await User.findOne({ email, magicToken: token });
     const currentTime = new Date();
-    if (user.tokenExpiry && currentTime > user.tokenExpiry) {
+    if (user?.tokenExpiry && currentTime > user.tokenExpiry) {
       return NextResponse.json({ message: 'Magic link has expired.' }, { status: 400 });
     }
     if (!user) {
@@ -30,8 +30,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     // Update the user's email verification status
     user.emailVerified = true;
-    user.magicToken = null; // Clear the magic token after successful verification
+    user.token = null; // Clear the magic token after successful verification
     user.tokenExpiry = null;
+
     await user.save();
 
     console.log(`User ${email} verified successfully.`);

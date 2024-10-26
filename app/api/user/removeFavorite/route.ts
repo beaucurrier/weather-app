@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ message: "User Not Found" }, { status: 404 });
 
   // Remove city from favorites
-  user.favoriteCities = user.favoriteCities.filter(
+  user.favoriteCities = user.favoriteCities?.filter(
     (fav: ICity) => fav.id.toString() !== cityId.toString()
   );
   await user.save();

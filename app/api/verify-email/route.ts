@@ -21,11 +21,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // Find the user with the provided email and magic token
     const user: IUser | null = await User.findOne({ email, magicToken: token });
     const currentTime = new Date();
-    if (user?.tokenExpiry && currentTime > user.tokenExpiry) {
-      return NextResponse.json({ message: 'Magic link has expired.' }, { status: 400 });
-    }
     if (!user) {
       return NextResponse.json({ message: 'Invalid or expired magic link.' }, { status: 400 });
+    }
+    if (user?.tokenExpiry && currentTime > user.tokenExpiry) {
+      return NextResponse.json({ message: 'Magic link has expired.' }, { status: 400 });
     }
 
     // Update the user's email verification status

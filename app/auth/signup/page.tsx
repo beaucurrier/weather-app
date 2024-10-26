@@ -114,7 +114,7 @@ export default function SignUp() {
       </form>
       {/* Link to the sign-in page if the user already has an account */}
       <p className='mt-4'>Already have an account?</p>
-      <a href='/signin' className='text-blue-500 hover:underline'>
+      <a href='/auth/signin' className='text-blue-500 hover:underline'>
         Sign In
       </a>
     </div>

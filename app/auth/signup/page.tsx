@@ -48,10 +48,15 @@ export default function SignUp() {
           setError(data.message || 'Failed to sign up. Please try again.');
         }
       }
-    } catch (err: any) {
-      console.error('Unexpected error during signup:', err); // Log the actual error
-      setError('Failed to sign up. Please try again.');
-    }
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Unexpected error during signup:', err.message); // Log the error message
+          setError('Failed to sign up. Please try again.');
+        } else {
+          console.error('An unexpected error occurred.');
+          setError('Failed to sign up. Please try again.');
+        }
+      }
   };
 
   if (emailSent) {

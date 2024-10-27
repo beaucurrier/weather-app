@@ -19,11 +19,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     await dbConnect();
 
     // Find the user with the provided email and magic token
-    const user: IUser | null = await User.findOne({ email, magicToken: token });
+    const user: IUser | null = await User.findOne({ email, token });
     const currentTime = new Date();
+    console.log('current time', currentTime);
     if (!user) {
       return NextResponse.json({ message: 'Invalid or expired magic link.' }, { status: 400 });
     }
+    if (user?.tokenExpiry)
+      console.log('tokenExpiry', user?.tokenExpiry);
     if (user?.tokenExpiry && currentTime > user.tokenExpiry) {
       return NextResponse.json({ message: 'Magic link has expired.' }, { status: 400 });
     }

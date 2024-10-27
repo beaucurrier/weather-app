@@ -55,7 +55,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       name,
       password: hashedPassword, // Save the hashed password
       emailVerified: false,
-      magicToken,
+      token: magicToken,
       tokenExpiry: expiry,
     });
     console.log('New user created:', newUser);

@@ -21,9 +21,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // Find the user with the provided email and magic token
     const user: IUser | null = await User.findOne({ email, token });
     const currentTime = new Date();
-    console.log('current time', currentTime);
+    console.log('current time', currentTime, user);
     if (user && user?.tokenExpiry)
-      console.log('tokenExpiry', user?.tokenExpiry);
+      {console.log('tokenExpiry', user?.tokenExpiry)};
     if (user && user?.tokenExpiry && currentTime > user.tokenExpiry) {
       return NextResponse.json({ message: 'Magic link has expired.' }, { status: 400 });
     }

@@ -10,19 +10,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // Parse the URL to get query parameters
     const { searchParams } = new URL(req.url);
     const token = searchParams.get('token');
-    const email = searchParams.get('email');
+    let email = searchParams.get('email');
 
     if (!token || !email) {
       return NextResponse.json({ message: 'Invalid request. Missing token or email.' }, { status: 400 });
     }
+    email = email.replace(/ /g,"+")
 
     await dbConnect();
 
     // Find the user with the provided email and magic token
     console.log(email, token)
-    const decodedEmail = decodeURIComponent(email);
-    console.log(decodedEmail)
-    const user: IUser | null = await User.findOne({ token });
+    const user: IUser | null = await User.findOne({ email, token });
     const currentTime = new Date();
     console.log('current time', currentTime, user);
     if (user && user?.tokenExpiry)
@@ -44,7 +43,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     console.log(`User ${email} verified successfully.`);
 
     // Redirect to the dashboard after successful verification
-    return NextResponse.redirect('/dashboard');
+    return NextResponse.redirect(new URL('/dashboard', process.env.NEXTAUTH_URL).toString());
 
   } catch (error) {
     console.error('Error during email verification:', error);

@@ -19,6 +19,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     await dbConnect();
 
     // Find the user with the provided email and magic token
+    console.log(email, token)
     const user: IUser | null = await User.findOne({ email, token });
     const currentTime = new Date();
     console.log('current time', currentTime, user);

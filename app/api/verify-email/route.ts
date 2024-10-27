@@ -21,7 +21,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // Find the user with the provided email and magic token
     console.log(email, token)
     const decodedEmail = decodeURIComponent(email);
-    const user: IUser | null = await User.findOne({ email: decodedEmail, token });
+    console.log(decodedEmail)
+    const user: IUser | null = await User.findOne({ token });
     const currentTime = new Date();
     console.log('current time', currentTime, user);
     if (user && user?.tokenExpiry)

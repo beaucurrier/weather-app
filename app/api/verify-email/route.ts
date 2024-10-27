@@ -22,15 +22,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const user: IUser | null = await User.findOne({ email, token });
     const currentTime = new Date();
     console.log('current time', currentTime);
+    if (user && user?.tokenExpiry)
+      console.log('tokenExpiry', user?.tokenExpiry);
+    if (user && user?.tokenExpiry && currentTime > user.tokenExpiry) {
+      return NextResponse.json({ message: 'Magic link has expired.' }, { status: 400 });
+    }
+    
     if (!user) {
       return NextResponse.json({ message: 'Invalid or expired magic link.' }, { status: 400 });
     }
-    if (user?.tokenExpiry)
-      console.log('tokenExpiry', user?.tokenExpiry);
-    if (user?.tokenExpiry && currentTime > user.tokenExpiry) {
-      return NextResponse.json({ message: 'Magic link has expired.' }, { status: 400 });
-    }
-
     // Update the user's email verification status
     user.emailVerified = true;
     user.token = null; // Clear the magic token after successful verification

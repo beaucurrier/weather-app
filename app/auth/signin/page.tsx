@@ -24,7 +24,7 @@ export default function SignIn() {
 
   const handleSignIn = (providerId: string) => {
     signIn(providerId, { callbackUrl: '/dashboard' });
-  };
+  }
 
   const handleSignUp = () => {
     router.push('/auth/signup');

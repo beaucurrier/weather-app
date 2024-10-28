@@ -13,6 +13,9 @@ export async function GET(): Promise<NextResponse> {
   if (!session)
     return NextResponse.json({ message: "unauthorized" }, { status: 401 });
 
+  if (session){
+    console.log('session.email', session.user?.email);
+  }
   const user: IUser | null = await User.findOne({
     email: session.user?.email,
   }).populate<{ favoriteCities: ICity[] }>("favoriteCities");

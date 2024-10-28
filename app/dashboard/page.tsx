@@ -43,6 +43,7 @@ export default function Dashboard() {
         const response = await fetch('/api/user/favorites');
         if (!response.ok) throw new Error('Failed to fetch favorites');
         const data = await response.json();
+        console.log(data);
         setFavorites(data);
       } catch (error) {
         console.error('Error fetching favorite cities:', error);

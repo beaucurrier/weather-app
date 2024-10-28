@@ -8,7 +8,7 @@ export interface IUser extends Document {
   name: string;  // Name of the user, required
   password?: string; // Password field
   image?: string; // Optional URL for the user's profile image
-  favoriteCities?: ICity[]; // Optional array of city references (full City objects)
+  favoriteCities?: ICity[] | []; // Optional array of city references (full City objects)
   emailVerified?: boolean;
   token?: string | null;
   tokenExpiry?: Date | null;

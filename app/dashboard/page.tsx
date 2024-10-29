@@ -25,6 +25,9 @@ export default function Dashboard() {
       signIn(); // Redirect to sign-in if no session
       return;
     }
+    if(session.user){
+      console.log(session)
+    }
     
     // Show email verification message only once
     if (session.user?.emailVerified && !localStorage.getItem('emailVerifiedShown')) {

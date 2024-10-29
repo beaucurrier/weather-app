@@ -22,5 +22,5 @@ const CitySchema: Schema = new Schema({
     lat: { type: Number, required: true }
   }
 });
-
-export default mongoose.models.City || mongoose.model<ICity>('City', CitySchema);
+const City = mongoose.models.City || mongoose.model<ICity>('City', CitySchema)
+export default City;

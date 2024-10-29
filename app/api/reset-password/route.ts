@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Return a response indicating the reset page can load
-  return NextResponse.json({ message: "Token and email verified." });
+  return NextResponse.redirect(new URL('/auth/reset-password', process.env.NEXTAUTH_URL).toString());
 }
 
 export async function POST(req: NextRequest) {

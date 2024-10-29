@@ -20,7 +20,8 @@ const authOptions: NextAuthOptions = {
 
         // Find the user with the provided email
         const user = await User.findOne({ email: credentials?.email });
-        if (!user) return null;  // Return null if no user is found
+        console.log('no user found',)
+        if (!user) {return null};  // Return null if no user is found
 
         // Check if the user's email has been verified
         if (!user.emailVerified) {
@@ -30,7 +31,8 @@ const authOptions: NextAuthOptions = {
 
         // Verify the password against the hashed password in the database
         const isValid = await bcrypt.compare(credentials?.password || "", user.password);
-        if (!isValid) return null;  // Deny access if password is incorrect
+        console.log('invalid password')
+        if (!isValid) {return null};  // Deny access if password is incorrect
 
         // Return user object if credentials are valid and email is verified
         return {

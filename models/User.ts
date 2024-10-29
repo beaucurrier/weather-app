@@ -8,7 +8,7 @@ export interface IUser extends Document {
   name: string;  // Name of the user, required
   password?: string; // Password field
   image?: string; // Optional URL for the user's profile image
-  favoriteCities?: ICity[] | []; // Optional array of city references (full City objects)
+  favoriteCities?: ICity[]; // Optional array of city references (full City objects)
   emailVerified?: boolean;
   token?: string | null;
   tokenExpiry?: Date | null;
@@ -21,7 +21,7 @@ const UserSchema: Schema<IUser> = new Schema({
   name: { type: String, required: true }, // Name is required
   password: { type: String }, // Password is required
   image: { type: String, default: '' }, // Optional image field for the user's profile picture
-  favoriteCities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'City', default: [] }], // Optional array of ObjectIds referencing the City model, defaults to an empty array
+  favoriteCities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'City'}], // Optional array of ObjectIds referencing the City model, defaults to an empty array
   emailVerified: {type: Boolean, default: false},
   token: {type: String, default: null},
   tokenExpiry: {type: Date, default: null}

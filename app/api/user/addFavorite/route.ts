@@ -45,7 +45,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   ) {
     return NextResponse.json({ message: "City already added" });
   }
-  if (cityRecord) {
+  if (cityRecord && user?.favoriteCities) {
     user.favoriteCities?.push(cityRecord);
   }
   await user.save();

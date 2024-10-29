@@ -16,32 +16,32 @@ declare module 'next-auth' {
 }
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [favorites, setFavorites] = useState<City[]>([]);
   const [showEmailVerifiedMessage, setShowEmailVerifiedMessage] = useState(false);
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'loading') return; // Wait until loading is complete
+
+    if (status === 'unauthenticated') {
       signIn(); // Redirect to sign-in if no session
       return;
     }
-    if(session.user){
-      console.log(session)
-    }
-    
+
     // Show email verification message only once
-    if (session.user?.emailVerified && !localStorage.getItem('emailVerifiedShown')) {
+    if (session?.user?.emailVerified && !localStorage.getItem('emailVerifiedShown')) {
       setShowEmailVerifiedMessage(true);
       localStorage.setItem('emailVerifiedShown', 'true');
       setTimeout(() => {
         setShowEmailVerifiedMessage(false);
       }, 3000);
     }
-  }, [session]);
+  }, [status, session]);
 
   // Load favorite cities from MongoDB when the component mounts
   useEffect(() => {
     async function fetchFavorites() {
+      if(status === "authenticated"){
       try {
         const response = await fetch('/api/user/favorites');
         if (!response.ok) throw new Error('Failed to fetch favorites');
@@ -51,6 +51,7 @@ export default function Dashboard() {
       } catch (error) {
         console.error('Error fetching favorite cities:', error);
       }
+    }
     }
     fetchFavorites();
   }, []);
@@ -91,7 +92,10 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error removing city from favorites:', error);
     }
-  };
+  }; 
+  if(status === "loading"){
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className='min-h-screen text-black flex flex-col items-center justify-center bg-gray-100 p-6'>

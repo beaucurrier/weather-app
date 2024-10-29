@@ -1,17 +1,16 @@
 'use server';
-export const dynamic = "force-dynamic"
 
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../lib/mongoose';
 import User, { IUser } from '../../../models/User';
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  // Parse the URL to get query parameters
+  const url = new URL(req.url);
+  const token = url.searchParams.get('token');
+  let email = url.searchParams.get('email');
+  
   try {
-    // Parse the URL to get query parameters
-    const url = new URL(req.url);
-    const token = url.searchParams.get('token');
-    let email = url.searchParams.get('email');
-
     if (!token || !email) {
       return NextResponse.json({ message: 'Invalid request. Missing token or email.' }, { status: 400 });
     }

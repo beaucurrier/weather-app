@@ -6,7 +6,6 @@ import dbConnect from "../../../lib/mongoose";
 import User from "../../../models/User";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  try {
     // Parse the URL to get query parameters
     const { searchParams } = new URL(req.url);
     const token = searchParams.get("token");
@@ -19,6 +18,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
     email = email.replace(/ /g, "+");
+  try {
 
     // Parse the request body for the new password
     const { newPassword } = await req.json();

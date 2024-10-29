@@ -1,6 +1,9 @@
 
 import mongoose from 'mongoose';
 
+import "../models/User";
+import "../models/City";
+
 const MONGODB_URI: string = process.env.MONGO_DB_URI || '';
 
 if (!MONGODB_URI) {

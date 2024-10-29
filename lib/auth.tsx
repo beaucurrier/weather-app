@@ -15,6 +15,7 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
+        console.log('credentials', credentials)
         await dbConnect();
 
         // Find the user with the provided email

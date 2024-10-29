@@ -30,6 +30,10 @@ export default function SignIn() {
     router.push('/auth/signup');
   };
 
+  const handleForgotPassword = () => {
+    router.push("/forgot-password");
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-8 px-4">
       <div className="w-full max-w-md space-y-8">
@@ -38,6 +42,16 @@ export default function SignIn() {
           
           {/* Sign In Form for email/password authentication */}
           <SignInForm />
+
+          {/* Forgot Password Link */}
+          <div className="text-center mt-4">
+            <button
+              onClick={handleForgotPassword}
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Forgot Password?
+            </button>
+          </div>
 
           {/* Sign Up Link */}
           <div className="text-center mt-6">

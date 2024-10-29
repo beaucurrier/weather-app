@@ -34,7 +34,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     await user.save();
 
-    const resetUrl = `${process.env.NEXTAUTH_URL}/api/reset-password?token=${resetToken}`;
+    const resetUrl = `${process.env.NEXTAUTH_URL}/api/reset-password?token=${resetToken}&email=${email}`;
 
     const message = {
       to: email,

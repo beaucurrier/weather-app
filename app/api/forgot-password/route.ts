@@ -29,12 +29,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // Generate a password reset token
     const resetToken = uuidv4();
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // Token valid for 1 hour
+    user.token = resetToken;
+    user.tokenExpiry = Date.now() + 3600000; // Token valid for 1 hour
 
     await user.save();
 
-    const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken}`;
+    const resetUrl = `${process.env.NEXTAUTH_URL}/api/reset-password?token=${resetToken}`;
 
     const message = {
       to: email,

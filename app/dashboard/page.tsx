@@ -57,10 +57,6 @@ export default function Dashboard() {
   }, []);
 
   const addCityToFavorites = async (city: City) => {
-    if (!session?.user?.emailVerified) {
-      alert('Please verify your email before adding cities to favorites.');
-      return;
-    }
     try {
       const response = await fetch('/api/user/addFavorite', {
         method: 'POST',

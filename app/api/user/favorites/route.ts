@@ -4,7 +4,7 @@ import dbConnect from "../../../../lib/mongoose";
 import User, { IUser } from "../../../../models/User";
 import { getServerSession } from "next-auth";
 import authOptions from "../../../../lib/auth";
-import { ICity } from "../../../../models/City";
+import City, { ICity } from "../../../../models/City";
 
 export async function GET(): Promise<NextResponse> {
   await dbConnect();

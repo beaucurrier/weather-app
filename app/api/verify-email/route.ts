@@ -9,12 +9,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const url = new URL(req.url);
   const token = url.searchParams.get('token');
   let email = url.searchParams.get('email');
+
+  if (!token || !email) {
+    return NextResponse.json({ message: 'Invalid request. Missing token or email.' }, { status: 400 });
+  }
+  email = email.replace(/ /g,"+")
   
   try {
-    if (!token || !email) {
-      return NextResponse.json({ message: 'Invalid request. Missing token or email.' }, { status: 400 });
-    }
-    email = email.replace(/ /g,"+")
 
     await dbConnect();
 

@@ -24,7 +24,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
-  const email = searchParams.get("email");
+  let email = searchParams.get("email");
+  if(email){
+  email = email.replace(/ /g, "+");
+  }
 
   if (!token || !email) {
     return NextResponse.json(

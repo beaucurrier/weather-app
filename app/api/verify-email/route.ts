@@ -9,8 +9,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     // Parse the URL to get query parameters
     const { searchParams } = new URL(req.url);
-    const token = searchParams.get('token');
-    let email = searchParams.get('email');
+    const token = req.nextUrl.searchParams.get('token');
+    let email = req.nextUrl.searchParams.get('email');
 
     if (!token || !email) {
       return NextResponse.json({ message: 'Invalid request. Missing token or email.' }, { status: 400 });

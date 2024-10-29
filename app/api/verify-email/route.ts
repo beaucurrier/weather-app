@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../lib/mongoose';
 import User, { IUser } from '../../../models/User';
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     // Parse the URL to get query parameters

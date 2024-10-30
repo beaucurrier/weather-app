@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
-interface ResetPasswordProps{searchParams: {token?: string; email?: string;}}
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ResetPassword({searchParams}: ResetPasswordProps) {
+export default function ResetPassword() {
   const router = useRouter();
-  const token = searchParams.token || "";
-  const email = searchParams.email || "";
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token') || "";
+  console.log(token)
+  const email = searchParams.get('email') || "";
+  console.log(email)
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

@@ -25,7 +25,7 @@ export default function ForgotPassword() {
         "If your email is registered, you will receive a reset link shortly."
       );
       setTimeout(()=>{
-        router.push('/auth/signIn')
+        router.push('/auth/signin')
       }, 3000)
     } else {
       setMessage("Failed to send reset link. Please try again.");

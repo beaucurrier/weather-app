@@ -58,7 +58,8 @@ export async function POST(req: NextRequest) {
     await dbConnect();
   
     const user = await User.findOne({ email: updatedEmail });
-
+    console.log('user', user)
+    
     if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
       return NextResponse.json(
         { message: "Invalid or expired reset link." },
@@ -75,7 +76,7 @@ export async function POST(req: NextRequest) {
     user.tokenExpiry = null;
     await user.save();
   
-    console.log(`Password reset successful for user: ${email}`);
+    console.log(`Password reset successful for user: ${updatedEmail}`);
 
     // Redirect to the sign-in page after successful reset
     return NextResponse.redirect(

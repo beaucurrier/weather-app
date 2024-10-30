@@ -83,6 +83,7 @@ export default function UserProfile() {
         setError(data.message || "Failed to update profile.");
       }
     } catch (error) {
+      console.log(error);
       setError("An error occurred. Please try again.");
     }
   };
@@ -220,7 +221,7 @@ export default function UserProfile() {
           {deleteMode && (
             <div className="mt-4 space-y-3">
               <p className="text-gray-700 text-center">
-                Type <span className="font-semibold">"delete account"</span> to
+                Type <span className="font-semibold">{`"delete account"`}</span> to
                 confirm.
               </p>
               <input

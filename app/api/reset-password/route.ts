@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "../../../lib/mongoose";
 import User from "../../../models/User";
-import { getServerSession } from "next-auth";
-import authOptions  from "../../../lib/auth";
+// import { getServerSession } from "next-auth";
+// import authOptions  from "../../../lib/auth";
 
 export async function GET(req: NextRequest) {
   // Parse the query parameters (for the initial page load when clicking the link)
@@ -24,25 +24,25 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  const { searchParams } = new URL(req.url);
-  const token = searchParams.get("token");
-  console.log('token', token)
-  let email = searchParams.get("email");
-  console.log('email', email)
-  if(email){
-  email = email.replace(/ /g, "+");
-  }
+  // const session = await getServerSession(authOptions);
+  // const { searchParams } = new URL(req.url);
+  // const token = searchParams.get("token");
+  // console.log('token', token)
+  // let email = searchParams.get("email");
+  // console.log('email', email)
+  // if(email){
+  // email = email.replace(/ /g, "+");
+  // }
 
-  if (!token || !email) {
-    return NextResponse.json(
-      { message: "Invalid request. Missing token or email." },
-      { status: 400 }
-    );
-  }
+  // if (!token || !email) {
+  //   return NextResponse.json(
+  //     { message: "Invalid request. Missing token or email." },
+  //     { status: 400 }
+  //   );
+  // }
 
   try {
-    const { newPassword } = await req.json();
+    const { newPassword, email, token } = await req.json();
     console.log('email', email)
     console.log('token', token)
     if (!newPassword || !token || !email ) {
@@ -52,10 +52,11 @@ export async function POST(req: NextRequest) {
       );
     }
     console.log(email, token)
+    let updatedEmail = email.replace(/ /g, '+')
 
     await dbConnect();
   
-    const user = await User.findOne({ email: session?.user.email });
+    const user = await User.findOne({ updatedEmail });
 
     if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
       return NextResponse.json(

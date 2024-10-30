@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Return a response indicating the reset page can load
-  return NextResponse.redirect(new URL(`'/auth/reset-password?email=${email}&token=${token}`, process.env.NEXTAUTH_URL).toString());
+  return NextResponse.redirect(new URL(`/auth/reset-password?email=${email}&token=${token}`, process.env.NEXTAUTH_URL).toString());
 }
 
 export async function POST(req: NextRequest) {
@@ -41,8 +41,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { newPassword } = await req.json();
-    if (!newPassword) {
+    const { newPassword, token, email } = await req.json();
+    if (!newPassword || !token || !email ) {
       return NextResponse.json(
         { message: "New password is required." },
         { status: 400 }

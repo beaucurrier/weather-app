@@ -41,7 +41,8 @@ export async function POST(req: NextRequest) {
   // }
 
   try {
-    let { newPassword, token, email } = await req.json();
+    const { newPassword, token } = await req.json();
+    let {email} = await req.json();
     if(email){
       email = email.replace(/ /g, "+");
       }

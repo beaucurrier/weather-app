@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "../../../lib/mongoose";
 import User from "../../../models/User";
+import { getServerSession } from "next-auth";
+import authOptions  from "../../../lib/auth";
 
 export async function GET(req: NextRequest) {
   // Parse the query parameters (for the initial page load when clicking the link)
@@ -22,6 +24,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
   console.log(token)
@@ -48,15 +51,16 @@ export async function POST(req: NextRequest) {
     }
 
     await dbConnect();
-
+    if (session){
     const user = await User.findOne({ email, token });
+
     if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
       return NextResponse.json(
         { message: "Invalid or expired reset link." },
         { status: 400 }
       );
     }
-
+  
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -65,7 +69,7 @@ export async function POST(req: NextRequest) {
     user.token = null;
     user.tokenExpiry = null;
     await user.save();
-
+  }
     console.log(`Password reset successful for user: ${email}`);
 
     // Redirect to the sign-in page after successful reset

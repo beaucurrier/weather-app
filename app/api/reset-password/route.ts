@@ -20,29 +20,28 @@ export async function GET(req: NextRequest) {
   }
 
   // Return a response indicating the reset page can load
-  return NextResponse.redirect(new URL('/auth/reset-password', process.env.NEXTAUTH_URL).toString());
+  return NextResponse.redirect(new URL(`'/auth/reset-password?email=${email}&token=${token}`, process.env.NEXTAUTH_URL).toString());
 }
 
 export async function POST(req: NextRequest) {
-  // const session = await getServerSession(authOptions);
-  // const { searchParams } = new URL(req.url);
-  // const token = searchParams.get("token");
-  // console.log('token', token)
-  // let email = searchParams.get("email");
-  // console.log('email', email)
-  // if(email){
-  // email = email.replace(/ /g, "+");
-  // }
+  const { searchParams } = new URL(req.url);
+  const token = searchParams.get("token");
+  console.log('token', token)
+  let email = searchParams.get("email");
+  console.log('email', email)
+  if(email){
+  email = email.replace(/ /g, "+");
+  }
 
-  // if (!token || !email) {
-  //   return NextResponse.json(
-  //     { message: "Invalid request. Missing token or email." },
-  //     { status: 400 }
-  //   );
-  // }
+  if (!token || !email) {
+    return NextResponse.json(
+      { message: "Invalid request. Missing token or email." },
+      { status: 400 }
+    );
+  }
 
   try {
-    const { newPassword, email } = await req.json();
+    const { newPassword } = await req.json();
     if (!newPassword) {
       return NextResponse.json(
         { message: "New password is required." },

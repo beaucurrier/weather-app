@@ -24,24 +24,29 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const token = searchParams.get("token");
-  console.log('token', token)
-  let email = searchParams.get("email");
-  console.log('email', email)
-  if(email){
-  email = email.replace(/ /g, "+");
-  }
+  // const { searchParams } = new URL(req.url);
+  // const token = searchParams.get("token");
+  // console.log('token', token)
+  // let email = searchParams.get("email");
+  // console.log('email', email)
+  // if(email){
+  // email = email.replace(/ /g, "+");
+  // }
 
-  if (!token || !email) {
-    return NextResponse.json(
-      { message: "Invalid request. Missing token or email." },
-      { status: 400 }
-    );
-  }
+  // if (!token || !email) {
+  //   return NextResponse.json(
+  //     { message: "Invalid request. Missing token or email." },
+  //     { status: 400 }
+  //   );
+  // }
 
   try {
-    const { newPassword, token, email } = await req.json();
+    let { newPassword, token, email } = await req.json();
+    if(email){
+      email = email.replace(/ /g, "+");
+      }
+    console.log('email', email)
+    console.log('token', token)
     if (!newPassword || !token || !email ) {
       return NextResponse.json(
         { message: "New password is required." },

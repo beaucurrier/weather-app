@@ -41,11 +41,9 @@ export async function POST(req: NextRequest) {
   // }
 
   try {
-    const { newPassword, token } = await req.json();
-    let {email} = await req.json();
-    if(email){
-      email = email.replace(/ /g, "+");
-      }
+    const { newPassword, token, email } = await req.json();
+    let updatedEmail = email.replace(/ /g, "+")
+    
     console.log('email', email)
     console.log('token', token)
     if (!newPassword || !token || !email ) {
@@ -58,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     await dbConnect();
   
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: updatedEmail });
 
     if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
       return NextResponse.json(
@@ -76,7 +74,7 @@ export async function POST(req: NextRequest) {
     user.tokenExpiry = null;
     await user.save();
   
-    console.log(`Password reset successful for user: ${email}`);
+    console.log(`Password reset successful for user: ${updatedEmail}`);
 
     // Redirect to the sign-in page after successful reset
     return NextResponse.redirect(

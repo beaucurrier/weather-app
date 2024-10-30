@@ -53,10 +53,11 @@ export async function POST(req: NextRequest) {
     }
     console.log(email, token)
     const updatedEmail = email.replace(/ /g, '+')
+    console.log("updatedEmail", updatedEmail)
 
     await dbConnect();
   
-    const user = await User.findOne({ updatedEmail });
+    const user = await User.findOne({ email: updatedEmail });
 
     if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
       return NextResponse.json(

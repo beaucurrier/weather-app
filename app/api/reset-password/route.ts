@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     await dbConnect();
     if (session){
-    const user = await User.findOne({ email, token });
+    const user = await User.findOne({ email: session.user.email });
 
     if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
       return NextResponse.json(

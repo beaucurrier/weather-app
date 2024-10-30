@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       );
     }
     console.log(email, token)
-    let updatedEmail = email.replace(/ /g, '+')
+    const updatedEmail = email.replace(/ /g, '+')
 
     await dbConnect();
   

@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     await dbConnect();
   if (token && email){
-    const user = await User.findOne({ email: updatedEmail });
+    const user = await User.findOne({ token });
     console.log('user', user)
 
     if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {

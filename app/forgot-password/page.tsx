@@ -2,10 +2,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +24,9 @@ export default function ForgotPassword() {
       setMessage(
         "If your email is registered, you will receive a reset link shortly."
       );
+      setTimeout(()=>{
+        router.push('/auth/signIn')
+      }, 3000)
     } else {
       setMessage("Failed to send reset link. Please try again.");
     }

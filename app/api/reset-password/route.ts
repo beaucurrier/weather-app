@@ -27,19 +27,19 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
-  console.log(token)
+  console.log('token', token)
   let email = searchParams.get("email");
-  console.log(email)
+  console.log('email', email)
   if(email){
   email = email.replace(/ /g, "+");
   }
 
-  if (!token || !email) {
-    return NextResponse.json(
-      { message: "Invalid request. Missing token or email." },
-      { status: 400 }
-    );
-  }
+  // if (!token || !email) {
+  //   return NextResponse.json(
+  //     { message: "Invalid request. Missing token or email." },
+  //     { status: 400 }
+  //   );
+  // }
 
   try {
     const { newPassword } = await req.json();

@@ -24,7 +24,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
+  console.log(token)
   let email = searchParams.get("email");
+  console.log(email)
   if(email){
   email = email.replace(/ /g, "+");
   }

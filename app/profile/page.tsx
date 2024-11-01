@@ -41,20 +41,22 @@ export default function UserProfile() {
   const handleSave = async () => {
     const isEmailUpdate =
       editingField === "email" && email !== session?.user?.email;
+    console.log(isEmailUpdate);
     const isPasswordUpdate = editingField === "password" && password;
 
     const endpoint = isPasswordUpdate
       ? "/api/reset-password"
       : isEmailUpdate
-      ? "/api/signup"
+      ? "/api/sign-up"
       : "/api/user/update-profile";
     const body = isPasswordUpdate
       ? { newPassword: password, currentPassword } // Only for password update
       : {
           name,
-          email: session?.user.email,
+          email: session?.user?.email || "",
           password: password || undefined,
           isEmailUpdate,
+          newEmail: email,
         };
 
     try {
@@ -73,7 +75,7 @@ export default function UserProfile() {
         );
         setEditingField(null);
 
-        if (isEmailUpdate) {
+        if (isEmailUpdate || isPasswordUpdate) {
           setTimeout(() => {
             signOut();
             router.push("/auth/signin");
@@ -83,7 +85,7 @@ export default function UserProfile() {
         setError(data.message || "Failed to update profile.");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError("An error occurred. Please try again.");
     }
   };
@@ -94,8 +96,8 @@ export default function UserProfile() {
       return;
     }
 
-    const res = await fetch("/api/user/delete-account", {
-      method: "DELETE",
+    const res = await fetch("/api/user/deleteAccount", {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
@@ -114,30 +116,30 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
-      <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-lg space-y-6">
-        <h2 className="text-3xl font-semibold text-center text-gray-800">
+    <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6'>
+      <div className='max-w-lg w-full bg-white p-8 rounded-lg shadow-lg space-y-6'>
+        <h2 className='text-3xl font-semibold text-center text-gray-800'>
           User Profile
         </h2>
-        {message && <p className="text-center text-green-500">{message}</p>}
-        {error && <p className="text-center text-red-500">{error}</p>}
+        {message && <p className='text-center text-green-500'>{message}</p>}
+        {error && <p className='text-center text-red-500'>{error}</p>}
 
         {/* Name Field */}
         <div>
-          <label className="text-gray-700 font-medium">Name</label>
+          <label className='text-gray-700 font-medium'>Name</label>
           {editingField === "name" ? (
             <input
-              type="text"
+              type='text'
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md"
+              className='w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md'
             />
           ) : (
-            <p className="mt-1 text-gray-800">{name || "N/A"}</p>
+            <p className='mt-1 text-gray-800'>{name || "N/A"}</p>
           )}
           <button
             onClick={() => toggleEditField("name")}
-            className="mt-2 text-blue-600 hover:underline"
+            className='mt-2 text-blue-600 hover:underline'
           >
             {editingField === "name" ? "Cancel" : "Edit"}
           </button>
@@ -145,20 +147,20 @@ export default function UserProfile() {
 
         {/* Email Field */}
         <div>
-          <label className="text-gray-700 font-medium">Email</label>
+          <label className='text-gray-700 font-medium'>Email</label>
           {editingField === "email" ? (
             <input
-              type="email"
+              type='email'
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md"
+              onChange={(e) => setEmail(e.target.value.toLowerCase())}
+              className='w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md'
             />
           ) : (
-            <p className="mt-1 text-gray-800">{email || "N/A"}</p>
+            <p className='mt-1 text-gray-800'>{email || "N/A"}</p>
           )}
           <button
             onClick={() => toggleEditField("email")}
-            className="mt-2 text-blue-600 hover:underline"
+            className='mt-2 text-blue-600 hover:underline'
           >
             {editingField === "email" ? "Cancel" : "Edit"}
           </button>
@@ -166,30 +168,30 @@ export default function UserProfile() {
 
         {/* Password Field */}
         <div>
-          <label className="text-gray-700 font-medium">Password</label>
+          <label className='text-gray-700 font-medium'>Password</label>
           {editingField === "password" ? (
             <>
               <input
-                type="password"
-                placeholder="Current Password"
+                type='password'
+                placeholder='Current Password'
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md"
+                className='w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md'
               />
               <input
-                type="password"
-                placeholder="New Password"
+                type='password'
+                placeholder='New Password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md"
+                className='w-full text-black px-3 py-2 mt-1 border border-gray-300 rounded-md'
               />
             </>
           ) : (
-            <p className="mt-1 text-gray-800">********</p>
+            <p className='mt-1 text-gray-800'>********</p>
           )}
           <button
             onClick={() => toggleEditField("password")}
-            className="mt-2 text-blue-600 hover:underline"
+            className='mt-2 text-blue-600 hover:underline'
           >
             {editingField === "password" ? "Cancel" : "Edit"}
           </button>
@@ -198,7 +200,7 @@ export default function UserProfile() {
         {editingField && (
           <button
             onClick={handleSave}
-            className="w-full mt-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className='w-full mt-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition'
           >
             Save Changes
           </button>
@@ -206,34 +208,34 @@ export default function UserProfile() {
 
         <button
           onClick={() => router.push("/dashboard")}
-          className="w-full mt-4 bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition"
+          className='w-full mt-4 bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition'
         >
           Go Back to Dashboard
         </button>
 
-        <div className="border-t pt-6 mt-4">
+        <div className='border-t pt-6 mt-4'>
           <button
             onClick={() => setDeleteMode(!deleteMode)}
-            className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
+            className='w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition'
           >
             {deleteMode ? "Cancel" : "Delete Account"}
           </button>
           {deleteMode && (
-            <div className="mt-4 space-y-3">
-              <p className="text-gray-700 text-center">
-                Type <span className="font-semibold">{`"delete account"`}</span> to
-                confirm.
+            <div className='mt-4 space-y-3'>
+              <p className='text-gray-700 text-center'>
+                Type <span className='font-semibold'>{`"delete account"`}</span>{" "}
+                to confirm.
               </p>
               <input
-                type="text"
+                type='text'
                 value={confirmDelete}
                 onChange={(e) => setConfirmDelete(e.target.value)}
                 placeholder='Type "delete account"'
-                className="w-full text-black px-3 py-2 border border-gray-300 rounded-md"
+                className='w-full text-black px-3 py-2 border border-gray-300 rounded-md'
               />
               <button
                 onClick={handleDeleteAccount}
-                className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
+                className='w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition'
               >
                 Confirm Delete Account
               </button>
@@ -255,4 +257,3 @@ export default function UserProfile() {
     </div>
   );
 }
-

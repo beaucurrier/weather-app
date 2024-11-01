@@ -1,13 +1,11 @@
-// app/api/auth/reset-password/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "../../../lib/mongoose";
 import User from "../../../models/User";
-// import { getServerSession } from "next-auth";
-// import authOptions  from "../../../lib/auth";
-
+import { getServerSession } from "next-auth";
+import authOptions from "../../../lib/auth"; // Adjust the path to your auth config
 export async function GET(req: NextRequest) {
-  // Parse the query parameters (for the initial page load when clicking the link)
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
   const email = searchParams.get("email");
@@ -19,73 +17,83 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Return a response indicating the reset page can load
-  return NextResponse.redirect(new URL(`/auth/reset-password?email=${email}&token=${token}`, process.env.NEXTAUTH_URL).toString());
+  return NextResponse.redirect(
+    new URL(
+      `/auth/reset-password?email=${email}&token=${token}`,
+      process.env.NEXT_PUBLIC_URL
+    ).toString()
+  );
 }
-
 export async function POST(req: NextRequest) {
-  // const session = await getServerSession(authOptions);
-  // const { searchParams } = new URL(req.url);
-  // const token = searchParams.get("token");
-  // console.log('token', token)
-  // let email = searchParams.get("email");
-  // console.log('email', email)
-  // if(email){
-  // email = email.replace(/ /g, "+");
-  // }
-
-  // if (!token || !email) {
-  //   return NextResponse.json(
-  //     { message: "Invalid request. Missing token or email." },
-  //     { status: 400 }
-  //   );
-  // }
-
   try {
-    const { newPassword, email, token } = await req.json();
-    console.log('email', email)
-    console.log('token', token)
-    if (!newPassword || !token || !email ) {
+    console.log("Starting password reset process...");
+
+    // Parse request body for newPassword and token/email
+    const { newPassword, token } = await req.json();
+
+    if (!newPassword) {
       return NextResponse.json(
         { message: "New password is required." },
         { status: 400 }
       );
     }
-    console.log(email, token)
-    const updatedEmail = email.replace(/ /g, '+')
-    console.log("updatedEmail", updatedEmail)
 
     await dbConnect();
-  if (token && email){
-    const user = await User.findOne({ token });
-    console.log('user', user)
 
-    if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
-      return NextResponse.json(
-        { message: "Invalid or expired reset link." },
-        { status: 400 }
+    if (token) {
+      // Unauthenticated Forgot Password Flow
+      console.log("Handling forgot password reset using token...");
+      const user = await User.findOne({ token });
+
+      if (!user || !user.tokenExpiry || new Date() > user.tokenExpiry) {
+        console.log("Invalid or expired reset link.");
+        return NextResponse.json(
+          { message: "Invalid or expired reset link." },
+          { status: 400 }
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      user.token = null;
+      user.tokenExpiry = null;
+      await user.save();
+
+      console.log(`Password reset successful for user: ${user.email}`);
+      return NextResponse.json({ message: "Password reset successful" });
+    } else {
+      // Authenticated Profile Password Reset Flow
+      const session = await getServerSession(authOptions);
+
+      if (!session || !session.user?.email) {
+        return NextResponse.json(
+          { message: "Unauthorized request." },
+          { status: 401 }
+        );
+      }
+
+      console.log("Handling profile password update for authenticated user...");
+      const user = await User.findOne({ email: session.user.email });
+      if (!user) {
+        return NextResponse.json(
+          { message: "User not found." },
+          { status: 404 }
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+
+      console.log(
+        `Password updated successfully for user: ${session.user.email}`
       );
+      return NextResponse.json({ message: "Password updated successfully" });
     }
-  
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update the user's password and clear the token fields
-    user.password = hashedPassword;
-    user.token = null;
-    user.tokenExpiry = null;
-    await user.save();
-  }
-    console.log(`Password reset successful for user: ${updatedEmail}`);
-
-    // Redirect to the sign-in page after successful reset
-    return NextResponse.redirect(
-      new URL("/auth/signin", process.env.NEXTAUTH_URL).toString()
-    );
   } catch (error) {
-    console.error("Error during password reset:", error);
+    console.error("Error during password reset/update:", error);
     return NextResponse.json(
-      { message: "Password reset failed. Please try again." },
+      { message: "Password reset/update failed. Please try again." },
       { status: 500 }
     );
   }

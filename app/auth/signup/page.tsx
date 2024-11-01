@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // For programmatic navigation
+import { useState } from "react";
+import { useRouter } from "next/navigation"; // For programmatic navigation
 
 export default function SignUp() {
-  const [name, setName] = useState<string>(''); // State to hold user's name
-  const [email, setEmail] = useState<string>(''); // State to hold user's email
-  const [password, setPassword] = useState<string>(''); // State to hold password
-  const [confirmPassword, setConfirmPassword] = useState<string>(''); // State to hold confirmation password
+  const [name, setName] = useState<string>(""); // State to hold user's name
+  const [email, setEmail] = useState<string>(""); // State to hold user's email
+  const [password, setPassword] = useState<string>(""); // State to hold password
+  const [confirmPassword, setConfirmPassword] = useState<string>(""); // State to hold confirmation password
   const [error, setError] = useState<string | null>(null); // State to manage any errors
   const [emailSent, setEmailSent] = useState<boolean>(false); // Track if email was sent
   const router = useRouter(); // Hook for navigation
@@ -19,44 +19,44 @@ export default function SignUp() {
 
     if (password !== confirmPassword) {
       // Check if passwords match
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     try {
-      console.log('Submitting signup request:', { name, email, password });
-      const res = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      console.log("Submitting signup request:", { name, email, password });
+      const res = await fetch("/api/sign-up", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }), // Send name, email, and password to the API
       });
 
       if (res.ok) {
         // Show the email sent message for 3 seconds
-        console.log('Signup successful, redirecting...');
+        console.log("Signup successful, redirecting...");
         setEmailSent(true);
         setTimeout(() => {
           // Redirect to login after 3 seconds
-          router.push('/auth/signin');
+          router.push("/auth/signin");
         }, 3000); // 3-second delay
       } else {
         // Fetch the error message and display it
         const data = await res.json();
-        if (data.message === 'User already exists') {
-          setError('User already exists. Please sign in.'); // Display user exists error
+        if (data.message === "User already exists") {
+          setError("User already exists. Please sign in."); // Display user exists error
         } else {
-          setError(data.message || 'Failed to sign up. Please try again.');
+          setError(data.message || "Failed to sign up. Please try again.");
         }
       }
     } catch (err: unknown) {
-        if (err instanceof Error) {
-          console.error('Unexpected error during signup:', err.message); // Log the error message
-          setError('Failed to sign up. Please try again.');
-        } else {
-          console.error('An unexpected error occurred.');
-          setError('Failed to sign up. Please try again.');
-        }
+      if (err instanceof Error) {
+        console.error("Unexpected error during signup:", err.message); // Log the error message
+        setError("Failed to sign up. Please try again.");
+      } else {
+        console.error("An unexpected error occurred.");
+        setError("Failed to sign up. Please try again.");
       }
+    }
   };
 
   if (emailSent) {
@@ -88,7 +88,7 @@ export default function SignUp() {
         <input
           type='email'
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value.toLowerCase())}
           placeholder='Email'
           required
           className='mb-4 p-2 w-full border rounded-md'
@@ -111,9 +111,13 @@ export default function SignUp() {
           required
           className='mb-4 p-2 w-full border rounded-md'
         />
-        {error && <p className='text-red-500 mb-4'>{error}</p>} {/* Display error messages if any */}
+        {error && <p className='text-red-500 mb-4'>{error}</p>}{" "}
+        {/* Display error messages if any */}
         {/* Submit button */}
-        <button type='submit' className='w-full p-2 bg-blue-600 text-white rounded-md'>
+        <button
+          type='submit'
+          className='w-full p-2 bg-blue-600 text-white rounded-md'
+        >
           Sign Up
         </button>
       </form>

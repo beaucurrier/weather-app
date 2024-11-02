@@ -50,7 +50,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       console.log("Verification link generated:", verificationLink);
       await sendgrid.send({
         to: newEmail,
-        from: process.env.EMAIL_FROM as string,
+        from: process.env.SEND_FROM_EMAIL as string,
         subject: "Confirm your new email address",
         html: `<p>Please confirm your new email by clicking <a href="${verificationLink}">here</a>.</p>`,
       });
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.log("New user created. Verification link:", verificationLink);
     await sendgrid.send({
       to: email,
-      from: process.env.EMAIL_FROM as string,
+      from: process.env.SEND_FROM_EMAIL as string,
       subject: "Verify your email",
       html: `<p>Click <a href="${verificationLink}">here</a> to verify your email.</p>`,
     });

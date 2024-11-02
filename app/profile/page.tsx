@@ -47,8 +47,8 @@ export default function UserProfile() {
     const endpoint = isPasswordUpdate
       ? "/api/reset-password"
       : isEmailUpdate
-      ? "/api/sign-up"
-      : "/api/user/update-profile";
+      ? "/api/signup"
+      : "/api/user/updateProfile";
     const body = isPasswordUpdate
       ? { newPassword: password, currentPassword } // Only for password update
       : {

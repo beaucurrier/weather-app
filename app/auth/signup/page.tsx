@@ -25,7 +25,7 @@ export default function SignUp() {
 
     try {
       console.log("Submitting signup request:", { name, email, password });
-      const res = await fetch("/api/sign-up", {
+      const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }), // Send name, email, and password to the API
